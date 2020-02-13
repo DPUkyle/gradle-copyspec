@@ -1,0 +1,29 @@
+wrapper {
+    gradleVersion '5.2.1'
+}
+
+tasks.withType(AbstractArchiveTask) {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    dirMode = 0755
+    fileMode = 0644
+}
+
+task outer(type: Tar) {
+    destinationDirectory = buildDir
+    archiveFileName = 'result.tar'
+
+    from files('foo.txt', 'bar/baz.txt')
+    from (tarTree('inner.tar')) { spec ->
+        spec.include 'bin/**'
+        spec.fileMode = null // should this "undo" fileMode = 0644 above for this child spec?
+    }
+
+    doFirst {
+        delete archiveFile
+    }
+
+    doLast {
+        logger.lifecycle 'Dumping tar content:{}', "tar -tvf ${archiveFile.get().asFile.absolutePath}".execute().text
+    }
+}
