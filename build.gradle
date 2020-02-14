@@ -1,3 +1,17 @@
+plugins {
+    id 'groovy'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation localGroovy()
+    implementation 'org.apache.commons:commons-vfs2:2.6.0'
+    implementation 'org.apache.commons:commons-compress:1.19'
+}
+
 wrapper {
     gradleVersion '5.2.1'
 }
